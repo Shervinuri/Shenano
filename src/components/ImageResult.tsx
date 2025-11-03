@@ -19,7 +19,7 @@ const ImageResult: React.FC<ImageResultProps> = ({
   modelName,
 }) => {
   return (
-    <div className="w-full flex flex-col items-center gap-8 p-8 bg-gradient-to-br from-yellow-600/20 via-black to-black rounded-lg border border-yellow-800/60 shadow-2xl mt-6">
+    <div className="w-full flex flex-col items-center gap-8 p-8 bg-gray-900 rounded-lg border border-yellow-500/50 shadow-2xl mt-6">
       <h2 className="text-2xl font-bold text-gray-200">
         Your Image is Ready!
       </h2>
@@ -48,7 +48,7 @@ const ImageResult: React.FC<ImageResultProps> = ({
           </a>
           <button
             onClick={onNewImage}
-            className="flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors">
+            className="flex items-center gap-2 px-6 py-3 bg-yellow-600 hover:bg-yellow-500 text-black font-semibold rounded-lg transition-colors">
             <PlusIcon className="w-5 h-5" />
             New Creation
           </button>

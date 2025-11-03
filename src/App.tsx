@@ -164,8 +164,12 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-black text-gray-200 flex flex-col font-sans">
       <header className="py-6 flex justify-center items-center px-8 relative z-10 shrink-0">
-        <h1 className="text-5xl font-semibold tracking-wide text-center bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-          SHΞNano Banana 🍌 ™
+        <h1 className="inline-flex items-baseline text-5xl font-semibold tracking-wide bg-gradient-to-r from-yellow-400 via-gray-200 to-yellow-200 bg-clip-text">
+          <span className="text-transparent">SHΞNano Banana&nbsp;</span>
+          <span role="img" aria-label="banana">
+            🍌
+          </span>
+          <span className="text-transparent">&nbsp;™</span>
         </h1>
       </header>
 
@@ -186,7 +190,7 @@ const App: React.FC = () => {
 
         {/* Show generation form only when not loading/successful */}
         {!isLoading && appState !== AppState.SUCCESS && (
-          <div className="w-full space-y-4 bg-gradient-to-br from-yellow-600/20 via-black to-black p-6 rounded-2xl border border-yellow-800/60 shadow-lg">
+          <div className="w-full space-y-4 bg-gray-900 p-6 rounded-2xl border border-yellow-500/50 shadow-lg">
             <div className="text-center mb-6">
               <h2 className="text-3xl text-gray-300">
                 Describe Your Vision
@@ -208,7 +212,7 @@ const App: React.FC = () => {
                     onClick={() => setAspectRatio(AspectRatio.SQUARE)}
                     className={`flex flex-col items-center justify-center p-2 rounded-md transition-colors ${
                       aspectRatio === AspectRatio.SQUARE
-                        ? 'bg-indigo-600 text-white'
+                        ? 'bg-yellow-600 text-black'
                         : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                     }`}>
                     <SquareIcon className="w-6 h-6 mb-1" />
@@ -218,7 +222,7 @@ const App: React.FC = () => {
                     onClick={() => setAspectRatio(AspectRatio.PORTRAIT)}
                     className={`flex flex-col items-center justify-center p-2 rounded-md transition-colors ${
                       aspectRatio === AspectRatio.PORTRAIT
-                        ? 'bg-indigo-600 text-white'
+                        ? 'bg-yellow-600 text-black'
                         : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                     }`}>
                     <RectangleVerticalIcon className="w-6 h-6 mb-1" />
@@ -230,7 +234,7 @@ const App: React.FC = () => {
                     onClick={() => setAspectRatio(AspectRatio.LANDSCAPE)}
                     className={`flex flex-col items-center justify-center p-2 rounded-md transition-colors ${
                       aspectRatio === AspectRatio.LANDSCAPE
-                        ? 'bg-indigo-600 text-white'
+                        ? 'bg-yellow-600 text-black'
                         : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                     }`}>
                     <RectangleHorizontalIcon className="w-6 h-6 mb-1" />
@@ -250,7 +254,7 @@ const App: React.FC = () => {
                 <textarea
                   id="user_prompt"
                   rows={4}
-                  className="w-full bg-gray-900 border border-gray-700 text-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-lg"
+                  className="w-full bg-gray-900 border border-gray-700 text-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-lg"
                   placeholder={`e.g., A fruit shop sign says میوه تازه and is made of glowing neon.`}
                   value={userPrompt}
                   onChange={(e) => setUserPrompt(e.target.value)}
@@ -266,7 +270,7 @@ const App: React.FC = () => {
             <button
               onClick={() => handleGenerate(null)}
               disabled={isLoading || !userPrompt}
-              className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-4 rounded-md font-bold text-xl hover:from-indigo-700 hover:to-purple-700 disabled:opacity-50 flex items-center justify-center gap-3 transition-all duration-300 transform hover:scale-105">
+              className="w-full bg-yellow-600 text-black px-4 py-4 rounded-md font-bold text-xl hover:bg-yellow-500 disabled:opacity-50 flex items-center justify-center gap-3 transition-all duration-300 transform hover:scale-105">
               {isLoading ? (
                 <LoaderIcon className="w-7 h-7 animate-spin" />
               ) : (
