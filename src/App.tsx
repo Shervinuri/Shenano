@@ -2,7 +2,8 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useState, useEffect} from 'react';
+import ApiKeyModal from './components/ApiKeyModal';
 import ImageResult from './components/ImageResult';
 import LoadingIndicator from './components/LoadingIndicator';
 import ReferenceImageUploader from './components/ReferenceImageUploader';
@@ -48,6 +49,11 @@ const App: React.FC = () => {
   const [appState, setAppState] = useState<AppState>(AppState.IDLE);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  // API Key State
+  const [apiKey, setApiKey] = useState<string | null>(null);
+  const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
+  const [apiKeyError, setApiKeyError] = useState<string | undefined>(undefined);
+
   // User Inputs
   const [userPrompt, setUserPrompt] = useState('');
   const [referenceImages, setReferenceImages] = useState<ImageFile[]>([]);
@@ -65,6 +71,24 @@ const App: React.FC = () => {
       }
     | null
   >(null);
+  
+  useEffect(() => {
+    const storedApiKey = localStorage.getItem('gemini-api-key');
+    if (storedApiKey) {
+      setApiKey(storedApiKey);
+      setIsApiKeyModalOpen(false);
+    } else {
+      setIsApiKeyModalOpen(true);
+    }
+  }, []);
+
+  const handleSaveApiKey = (newApiKey: string) => {
+    setApiKey(newApiKey);
+    localStorage.setItem('gemini-api-key', newApiKey);
+    setIsApiKeyModalOpen(false);
+    setApiKeyError(undefined); // Clear any previous error
+  };
+
 
   const handleError = (
     message: string,
@@ -75,6 +99,16 @@ const App: React.FC = () => {
     const errorDetails =
       error instanceof Error ? error.message : 'An unknown error occurred.';
 
+    // Check for common API key errors
+    if (errorDetails.includes('API key not valid') || errorDetails.includes('API_KEY_INVALID')) {
+        localStorage.removeItem('gemini-api-key');
+        setApiKey(null);
+        setApiKeyError('Your API key is invalid. Please enter a valid key.');
+        setIsApiKeyModalOpen(true);
+        setAppState(AppState.IDLE); // Reset state to show form again
+        return;
+    }
+      
     const userFriendlyMessage = `${message}: ${errorDetails}`;
     setErrorMessage(userFriendlyMessage);
     setAppState(state);
@@ -83,6 +117,12 @@ const App: React.FC = () => {
   const handleGenerate = async (
     retryConfig?: typeof lastConfig | null,
   ) => {
+    if (!apiKey) {
+      setIsApiKeyModalOpen(true);
+      setApiKeyError('An API key is required to generate images.');
+      return;
+    }
+
     const isRetry = !!retryConfig;
     const currentPrompt = isRetry ? '' : userPrompt;
 
@@ -105,7 +145,7 @@ const App: React.FC = () => {
         textPlatesToUse = retryConfig.textPlates;
         referenceImagesToUse = retryConfig.referenceImages;
       } else {
-        const quotedPrompt = await addQuotesToPrompt(currentPrompt);
+        const quotedPrompt = await addQuotesToPrompt(currentPrompt, apiKey);
         const textPlates = await extractTextAndGeneratePlates(quotedPrompt);
         const engineeredPrompt = await engineerPrompt(
           quotedPrompt,
@@ -113,6 +153,7 @@ const App: React.FC = () => {
           textPlates,
           referenceImages,
           aspectRatio,
+          apiKey,
         );
         promptToUse = `${engineeredPrompt.professional_prompt}\n\n${engineeredPrompt.text_replication_instruction}\n\nNegative Prompt: ${engineeredPrompt.negative_prompt}`;
         textPlatesToUse = textPlates;
@@ -129,6 +170,7 @@ const App: React.FC = () => {
         promptToUse,
         textPlatesToUse,
         referenceImagesToUse,
+        apiKey,
       );
       setResultUrl(objectUrl);
       setAppState(AppState.SUCCESS);
@@ -163,10 +205,16 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-black text-gray-200 flex flex-col font-sans">
+      {isApiKeyModalOpen && (
+        <ApiKeyModal onSave={handleSaveApiKey} initialError={apiKeyError} />
+      )}
       <header className="py-6 flex justify-center items-center px-8 relative z-10 shrink-0">
         <h1 className="inline-flex items-baseline text-5xl font-semibold tracking-wide bg-gradient-to-r from-yellow-400 via-gray-200 to-yellow-200 bg-clip-text">
           <span className="text-transparent">SHΞNano Banana&nbsp;</span>
-          <span role="img" aria-label="banana">
+          <span
+            role="img"
+            aria-label="banana"
+            style={{textShadow: 'none', color: 'initial', WebkitTextFillColor: 'initial'}}>
             🍌
           </span>
           <span className="text-transparent">&nbsp;™</span>

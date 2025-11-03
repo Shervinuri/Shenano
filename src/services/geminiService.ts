@@ -40,12 +40,13 @@ Examples:
 
 export const addQuotesToPrompt = async (
   userPrompt: string,
+  apiKey: string,
 ): Promise<string> => {
   if (!userPrompt.trim()) {
     return userPrompt;
   }
 
-  const ai = new GoogleGenAI({apiKey: process.env.API_KEY});
+  const ai = new GoogleGenAI({apiKey});
 
   try {
     const response = await ai.models.generateContent({
@@ -122,15 +123,15 @@ The JSON schema MUST be:
 Your main job is to correctly associate each \`text_plate_N.png\` with its intended location in the scene described by the user and to formulate the \`professional_prompt\` to describe a dynamic video scene with camera motion.
 `;
 
-// FIX: Updated engineerPrompt to handle both image and video targets.
 export const engineerPrompt = async (
   userPrompt: string,
   targetModel: TargetModel,
   textPlates: ImageFile[],
   referenceImages: ImageFile[],
   aspectRatio: string,
+  apiKey: string,
 ): Promise<EngineeredPrompt> => {
-  const ai = new GoogleGenAI({apiKey: process.env.API_KEY});
+  const ai = new GoogleGenAI({apiKey});
 
   const parts: any[] = [
     {
@@ -197,8 +198,9 @@ export const generateImage = async (
   prompt: string,
   textPlates: ImageFile[],
   referenceImages: ImageFile[],
+  apiKey: string,
 ): Promise<{objectUrl: string}> => {
-  const ai = new GoogleGenAI({apiKey: process.env.API_KEY});
+  const ai = new GoogleGenAI({apiKey});
 
   const allImages = [...textPlates, ...referenceImages];
   const parts: any[] = [{text: prompt}];

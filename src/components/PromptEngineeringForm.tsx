@@ -25,6 +25,8 @@ interface PromptEngineeringFormProps {
   setAppState: (state: AppState) => void;
   handleError: (message: string, error?: unknown) => void;
   isLoading: boolean;
+  // FIX: Add apiKey prop to be passed to the engineerPrompt service call.
+  apiKey: string;
 }
 
 const PromptEngineeringForm: React.FC<PromptEngineeringFormProps> = ({
@@ -32,6 +34,8 @@ const PromptEngineeringForm: React.FC<PromptEngineeringFormProps> = ({
   setAppState,
   handleError,
   isLoading,
+  // FIX: Destructure apiKey from props.
+  apiKey,
 }) => {
   const [persianText, setPersianText] = useState('');
   const [textPlateImage, setTextPlateImage] = useState<ImageFile | null>(null);
@@ -56,13 +60,14 @@ const PromptEngineeringForm: React.FC<PromptEngineeringFormProps> = ({
           ? AspectRatio.LANDSCAPE
           : AspectRatio.SQUARE;
 
-      // FIX: Corrected the call to engineerPrompt to match its updated signature.
+      // FIX: Corrected the call to engineerPrompt to match its updated signature by passing the apiKey.
       const result = await engineerPrompt(
         userPrompt,
         targetModel,
         [textPlateImage],
         referenceImages,
         aspectRatio,
+        apiKey,
       );
       onPromptEngineered(result, textPlateImage, referenceImages);
     } catch (err) {
