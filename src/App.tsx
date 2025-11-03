@@ -165,7 +165,7 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-black text-gray-200 flex flex-col font-sans">
       <header className="py-6 flex justify-center items-center px-8 relative z-10 shrink-0">
         <h1 className="text-5xl font-semibold tracking-wide text-center bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-          SHΞNano Benana 🍌 ™
+          SHΞNano Banana 🍌 ™
         </h1>
       </header>
 
@@ -186,7 +186,7 @@ const App: React.FC = () => {
 
         {/* Show generation form only when not loading/successful */}
         {!isLoading && appState !== AppState.SUCCESS && (
-          <div className="w-full space-y-4 bg-gray-900/50 p-6 rounded-2xl border border-gray-800">
+          <div className="w-full space-y-4 bg-gradient-to-br from-yellow-600/20 via-black to-black p-6 rounded-2xl border border-yellow-800/60 shadow-lg">
             <div className="text-center mb-6">
               <h2 className="text-3xl text-gray-300">
                 Describe Your Vision

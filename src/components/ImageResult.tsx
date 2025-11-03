@@ -19,7 +19,7 @@ const ImageResult: React.FC<ImageResultProps> = ({
   modelName,
 }) => {
   return (
-    <div className="w-full flex flex-col items-center gap-8 p-8 bg-gray-800/50 rounded-lg border border-gray-700 shadow-2xl mt-6">
+    <div className="w-full flex flex-col items-center gap-8 p-8 bg-gradient-to-br from-yellow-600/20 via-black to-black rounded-lg border border-yellow-800/60 shadow-2xl mt-6">
       <h2 className="text-2xl font-bold text-gray-200">
         Your Image is Ready!
       </h2>
