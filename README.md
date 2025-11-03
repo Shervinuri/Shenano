@@ -8,7 +8,7 @@ This contains everything you need to run your app locally.
 
 View your app in AI Studio: https://ai.studio/apps/drive/1_Cfu6OcU8iLcFwr1qm5mknS6jI77QD5f
 
-## Run hosted on https://nanobananai.netlify.app/
+## Run hosted on https://nanobananai.netlify.app
 
 **Prerequisites:**  Node.js
 
