@@ -2,7 +2,8 @@
   <img width="1200" height="475" alt="GHBanner" src="https://raw.githubusercontent.com/Shervinuri/Shenano/refs/heads/main/shen_studio_image%20(4).png" />
 </div>
 
-<h1 align="center">برای اولین بار در ایران: تولید نوشتار فارسی بی‌نقص در مدل‌های هوش مصنوعی گوگل</h1>
+<h1 align="center">برای اولین بار در ایران: 
+  تولید نوشتار فارسی بی‌نقص در مدل‌های هوش مصنوعی گوگل</h1>
 
 <p align="center">توسط <strong>SHΞЯVIN™</strong>، برای نخستین بار قابلیت تولید نوشتار فارسی بدون هرگونه غلط و اعوجاج در مدل‌های پیشرفته <strong>Nano Banana</strong> و <strong>Veo 3.1</strong> گوگل با موفقیت فعال‌سازی شد.</p>
 
@@ -14,7 +15,7 @@
 
 ---
 
-## 🚀 Run and Deploy Your AI Studio App
+## 🍌 Run and Deploy Your AI Studio App
 
 This repository contains everything you need to run your app locally.
 
