@@ -15,6 +15,7 @@ import {
   RectangleVerticalIcon,
   SparklesIcon,
   SquareIcon,
+  KeyIcon,
 } from './components/icons';
 import {extractTextAndGeneratePlates} from './components/utils';
 import {
@@ -219,6 +220,16 @@ const App: React.FC = () => {
           </span>
           <span className="text-transparent">&nbsp;™</span>
         </h1>
+        <button
+          onClick={() => {
+            setApiKeyError(undefined); // Clear previous errors when manually opening
+            setIsApiKeyModalOpen(true);
+          }}
+          className="absolute top-1/2 right-8 -translate-y-1/2 p-2 rounded-full text-gray-400 hover:bg-gray-800 hover:text-yellow-400 transition-colors"
+          title="Change API Key"
+          aria-label="Change API Key">
+          <KeyIcon className="w-6 h-6" />
+        </button>
       </header>
 
       <main className="w-full max-w-4xl mx-auto flex-grow flex flex-col items-center justify-center p-4">
