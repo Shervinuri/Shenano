@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="1200" height="475" alt="GHBanner" src="https://raw.githubusercontent.com/Shervinuri/Shenano/refs/heads/main/shen_studio_image%20(4).png" />
+  <img width="1200" height="475" alt="GHBanner" src="https://raw.githubusercontent.com/Shervinuri/Shenano/refs/heads/main/unnamed%20(3).jpg" />
 </div>
 
 <h1 align="center">برای اولین بار در ایران: تولید نوشتار فارسی بی‌نقص در مدل‌های هوش مصنوعی گوگل</h1>
