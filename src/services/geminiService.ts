@@ -74,28 +74,32 @@ export const addQuotesToPrompt = async (
 
 // FIX: Updated system instruction for image prompt engineering.
 const SYSTEM_INSTRUCTION_IMAGE = `
-You are an 'AI Prompt Engineering Specialist' for image generation, specializing in rendering accurate text.
+You are an 'AI Prompt Engineering Specialist' for image generation, specializing in rendering accurate text and grounding concepts in reality.
 Your task is to convert a user's simple request into a technically detailed, professional prompt for Google's 'gemini-2.5-flash-image' model.
 
 You will receive:
-1.  A simple user prompt (e.g., "A fruit shop with 'میوه تازه' on the sign, and a man with 'شروین' on his t-shirt").
-2.  One or more image files named 'text_plate_1.png', 'text_plate_2.png', etc. Each file is a visual rendering of a text string that was extracted from the user's prompt.
-3.  Optional user-provided reference images for style, objects, etc.
-4.  A desired aspect ratio (e.g., "1:1", "16:9", "9:16").
+1.  A simple user prompt.
+2.  Image files for text plates ('text_plate_N.png').
+3.  Optional user-provided reference images.
+4.  A desired aspect ratio.
 
-Your task is to analyze ALL inputs and respond ONLY with a valid JSON string.
-DO NOT include markdown (e.g., "json ...") or any text outside the JSON object.
+Your task is to:
+1.  Analyze the user's prompt to identify if it contains a specific, real-world, famous entity (like a landmark, a specific car model, a famous painting, etc.), especially those related to Iranian culture (e.g., "برج میلاد", "خودرو سمند", "میدان آزادی").
+2.  If such an entity is found, create a concise, effective search query in ENGLISH to find a high-quality, realistic photograph of it. This query will be used to automatically fetch a reference image.
+3.  Generate a professional prompt and other instructions based on ALL inputs.
+4.  Respond ONLY with a valid JSON string. DO NOT include markdown or any text outside the JSON object.
 
 The JSON schema MUST be:
 {
-  "analysis_notes": "Your brief analysis of the user's request, identifying which text plate corresponds to which object in the scene. Written in Persian.",
+  "analysis_notes": "Your brief analysis of the user's request. Written in Persian.",
+  "grounding_search_query": "The English search query for the real-world entity, if found. Otherwise, this MUST be null. Example: 'Azadi Tower Tehran'.",
   "target_model": "image",
-  "professional_prompt": "The full, professional, highly-detailed prompt in ENGLISH. Describe the scene, lighting, mood, composition, and art style. CRITICALLY, you must include specific instructions on where to place the text from each text plate, AND you must explicitly mention the desired aspect ratio (e.g., 'A cinematic photo, 16:9 aspect ratio...').",
-  "text_replication_instruction": "A combined, critical instruction in ENGLISH. This tells the model to *visually replicate* each text plate. For example: 'CRITICAL INSTRUCTION: The sign in the scene MUST be an *exact visual replication* of 'text_plate_1.png'. The text on the t-shirt MUST be an *exact visual replication* of 'text_plate_2.png'. Do NOT write text from your own knowledge; you must *paint the exact visual patterns* from the reference images onto the specified surfaces, matching perspective and lighting.'",
-  "negative_prompt": "A comprehensive negative prompt in ENGLISH (e.g., blurry, low-quality, bad anatomy, deformed text, mutated hands, artifacts, watermarks, signature, wrong text)."
+  "professional_prompt": "The full, professional, highly-detailed prompt in ENGLISH. Describe the scene, lighting, mood, composition, art style, and aspect ratio. If a grounding reference image (named 'grounding_reference.png') will be provided, CRITICALLY instruct the model to use it as the primary visual reference for the entity, ensuring high fidelity and realism (e.g., 'The Azadi Tower in the scene must be an exact visual replication of the provided 'grounding_reference.png'').",
+  "text_replication_instruction": "A combined, critical instruction in ENGLISH for replicating the 'text_plate_N.png' images.",
+  "negative_prompt": "A comprehensive negative prompt in ENGLISH."
 }
 
-Your main job is to correctly associate each \`text_plate_N.png\` with its intended location in the scene described by the user, incorporate the aspect ratio into the main prompt, and formulate the \`professional_prompt\` and \`text_replication_instruction\` to reflect this mapping precisely.
+Your main job is to intelligently decide if a real-world entity needs a grounding image, create a query for it, and then construct the professional prompt to use that grounding image effectively.
 `;
 
 // FIX: Added a new system instruction for video generation.
@@ -193,6 +197,41 @@ export const engineerPrompt = async (
     );
   }
 };
+
+export const getGroundingImage = async (
+  query: string,
+  apiKey: string,
+): Promise<ImageFile> => {
+  const ai = new GoogleGenAI({apiKey});
+  const prompt = `A high-quality, photorealistic, daytime, centered, clear photograph of ${query}. No people, no text, no watermarks, professional photography.`;
+
+  const response = await ai.models.generateContent({
+    model: 'gemini-2.5-flash-image',
+    contents: {parts: [{text: prompt}]},
+    config: {
+      responseModalities: [Modality.IMAGE],
+    },
+  });
+
+  for (const part of response.candidates[0].content.parts) {
+    if (part.inlineData) {
+      const base64ImageBytes: string = part.inlineData.data;
+      
+      // Convert base64 to blob/file
+      const fetchRes = await fetch(`data:image/png;base64,${base64ImageBytes}`);
+      const blob = await fetchRes.blob();
+      const file = new File([blob], 'grounding_reference.png', { type: 'image/png' });
+
+      return {
+        file,
+        base64: base64ImageBytes,
+        name: file.name,
+      };
+    }
+  }
+  throw new Error('Failed to generate grounding image.');
+};
+
 
 export const generateImage = async (
   prompt: string,

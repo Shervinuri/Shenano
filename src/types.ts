@@ -37,6 +37,7 @@ export interface EngineeredPrompt {
   negative_prompt: string;
   // FIX: Added missing target_model property
   target_model: string;
+  grounding_search_query?: string | null;
 }
 
 // FIX: Added types for Veo Video Generation

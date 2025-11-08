@@ -22,6 +22,7 @@ import {
   addQuotesToPrompt,
   engineerPrompt,
   generateImage,
+  getGroundingImage,
 } from './services/geminiService';
 import {
   AppState,
@@ -72,6 +73,7 @@ const App: React.FC = () => {
       }
     | null
   >(null);
+  const [loadingMessage, setLoadingMessage] = useState<string>('');
   
   useEffect(() => {
     const storedApiKey = localStorage.getItem('gemini-api-key');
@@ -145,9 +147,15 @@ const App: React.FC = () => {
         promptToUse = retryConfig.prompt;
         textPlatesToUse = retryConfig.textPlates;
         referenceImagesToUse = retryConfig.referenceImages;
+        setLoadingMessage('Re-generating your masterpiece...');
       } else {
+        setLoadingMessage('Analyzing prompt for text...');
         const quotedPrompt = await addQuotesToPrompt(currentPrompt, apiKey);
+
+        setLoadingMessage('Generating text blueprints...');
         const textPlates = await extractTextAndGeneratePlates(quotedPrompt);
+
+        setLoadingMessage('Engineering professional prompt...');
         const engineeredPrompt = await engineerPrompt(
           quotedPrompt,
           TargetModel.IMAGE,
@@ -156,9 +164,19 @@ const App: React.FC = () => {
           aspectRatio,
           apiKey,
         );
+        
         promptToUse = `${engineeredPrompt.professional_prompt}\n\n${engineeredPrompt.text_replication_instruction}\n\nNegative Prompt: ${engineeredPrompt.negative_prompt}`;
         textPlatesToUse = textPlates;
-        referenceImagesToUse = referenceImages;
+        referenceImagesToUse = [...referenceImages];
+
+        if (engineeredPrompt.grounding_search_query) {
+            setLoadingMessage(`Searching for reference: "${engineeredPrompt.grounding_search_query}"...`);
+            const groundingImage = await getGroundingImage(
+              engineeredPrompt.grounding_search_query,
+              apiKey
+            );
+            referenceImagesToUse.push(groundingImage);
+          }
       }
 
       setLastConfig({
@@ -167,6 +185,7 @@ const App: React.FC = () => {
         referenceImages: referenceImagesToUse,
       });
 
+      setLoadingMessage('Painting your vision with Nano Banana...');
       const {objectUrl} = await generateImage(
         promptToUse,
         textPlatesToUse,
@@ -177,6 +196,8 @@ const App: React.FC = () => {
       setAppState(AppState.SUCCESS);
     } catch (error) {
       handleError('Generation failed', error);
+    } finally {
+        setLoadingMessage('');
     }
   };
 
@@ -243,7 +264,7 @@ const App: React.FC = () => {
       </header>
 
       <main className="w-full max-w-4xl mx-auto flex-grow flex flex-col items-center justify-center p-4">
-        {isLoading && <LoadingIndicator />}
+        {isLoading && <LoadingIndicator message={loadingMessage} />}
         {appState === AppState.ERROR &&
           errorMessage &&
           renderError(errorMessage)}
