@@ -261,12 +261,11 @@ const App: React.FC = () => {
         {!isLoading && appState !== AppState.SUCCESS && (
           <div className="w-full space-y-4 bg-gray-900 p-6 rounded-2xl border border-yellow-500/50 shadow-lg">
             <div className="text-center mb-6">
-              <h2 className="text-3xl text-gray-300">
-                Describe Your Vision
+              <h2 className="text-3xl shen-gradient-text">
+                ریزمــوز نبین چه ریزه فارسیش خیلی تمیزه
               </h2>
-              <p className="text-md text-gray-500 mt-2">
-                Create stunning images with perfectly rendered Persian text.
-                Just describe the scene and any text you want included.
+              <p className="text-sm mt-2 shen-gradient-text">
+                تصاویر خیره‌کننده با متن فارسی دقیق و تمیز بساز. فقط صحنه و هر متنی که می‌خوای رو بگو.
               </p>
             </div>
 
@@ -281,7 +280,7 @@ const App: React.FC = () => {
                     onClick={() => setAspectRatio(AspectRatio.SQUARE)}
                     className={`flex flex-col items-center justify-center p-2 rounded-md transition-colors ${
                       aspectRatio === AspectRatio.SQUARE
-                        ? 'bg-yellow-600 text-black'
+                        ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-bold'
                         : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                     }`}>
                     <SquareIcon className="w-6 h-6 mb-1" />
@@ -291,7 +290,7 @@ const App: React.FC = () => {
                     onClick={() => setAspectRatio(AspectRatio.PORTRAIT)}
                     className={`flex flex-col items-center justify-center p-2 rounded-md transition-colors ${
                       aspectRatio === AspectRatio.PORTRAIT
-                        ? 'bg-yellow-600 text-black'
+                        ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-bold'
                         : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                     }`}>
                     <RectangleVerticalIcon className="w-6 h-6 mb-1" />
@@ -303,7 +302,7 @@ const App: React.FC = () => {
                     onClick={() => setAspectRatio(AspectRatio.LANDSCAPE)}
                     className={`flex flex-col items-center justify-center p-2 rounded-md transition-colors ${
                       aspectRatio === AspectRatio.LANDSCAPE
-                        ? 'bg-yellow-600 text-black'
+                        ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-bold'
                         : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                     }`}>
                     <RectangleHorizontalIcon className="w-6 h-6 mb-1" />
@@ -316,15 +315,15 @@ const App: React.FC = () => {
               <div>
                 <label
                   htmlFor="user_prompt"
-                  className="block text-sm font-medium text-gray-300 mb-2">
-                  <FileTextIcon className="w-5 h-5 inline-block mr-2" />
-                  Your Prompt
+                  className="block text-sm font-medium text-gray-300 mb-2 text-right">
+                  <span className="shen-gradient-text">رو چی با چی بنویسم برات چی؟</span>
                 </label>
                 <textarea
                   id="user_prompt"
                   rows={4}
-                  className="w-full bg-gray-900 border border-gray-700 text-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-lg"
-                  placeholder={`e.g., A fruit shop sign says میوه تازه and is made of glowing neon.`}
+                  dir="rtl"
+                  className="w-full bg-gray-900 border border-gray-700 text-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-lg placeholder-gradient"
+                  placeholder={`مثلاً: با اسپری رو دیوار بنویس مرگ بر آخوند`}
                   value={userPrompt}
                   onChange={(e) => setUserPrompt(e.target.value)}
                 />

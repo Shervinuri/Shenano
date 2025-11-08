@@ -34,20 +34,22 @@ const ReferenceImageUploader: React.FC<ReferenceImageUploaderProps> = ({
   };
 
   return (
-    <div>
-      <h3 className="text-sm font-medium text-gray-300 mb-2">
-        Reference Images (Optional)
+    <div className="text-right">
+      <h3 className="text-base mb-2 shen-gradient-text">
+        تصاویر مرجع (اختیاری)
       </h3>
-      <p className="text-xs text-gray-500 mb-3">
-        Upload images for style, environment, character, or color palette.
+      <p className="text-xs mb-3 shen-gradient-text">
+        عکس‌ها رو برای سبک، محیط، شخصیت یا پالت رنگ آپلود کن.
       </p>
       <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-700 border-dashed rounded-lg cursor-pointer bg-gray-900 hover:bg-gray-800/80">
         <div className="flex flex-col items-center justify-center pt-5 pb-6">
           <UploadCloudIcon className="w-8 h-8 mb-3 text-gray-500" />
           <p className="mb-2 text-sm text-gray-500">
-            <span className="font-semibold">Click to upload</span>
+            <span className="font-medium shen-gradient-text">برای آپلود کلیک کن</span>
           </p>
-          <p className="text-xs text-gray-500">PNG, JPG (Max 10)</p>
+          <p className="text-xs shen-gradient-text">
+            PNG, JPG (حداکثر ۱۰)
+          </p>
         </div>
         <input
           type="file"
