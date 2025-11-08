@@ -13,7 +13,7 @@ import {
   RectangleHorizontalIcon,
   RectangleStackIcon,
   RectangleVerticalIcon,
-  SparklesIcon,
+  BananaIcon,
   SquareIcon,
   KeyIcon,
 } from './components/icons';
@@ -209,27 +209,37 @@ const App: React.FC = () => {
       {isApiKeyModalOpen && (
         <ApiKeyModal onSave={handleSaveApiKey} initialError={apiKeyError} />
       )}
-      <header className="py-6 flex justify-center items-center px-8 relative z-10 shrink-0">
-        <h1 className="inline-flex items-baseline text-5xl font-semibold tracking-wide bg-gradient-to-r from-yellow-400 via-gray-200 to-yellow-200 bg-clip-text">
+      <header className="py-6 grid grid-cols-[1fr_auto_1fr] items-center px-8 z-10 shrink-0">
+        {/* Left empty cell for spacing */}
+        <div />
+
+        <h1 className="inline-flex justify-center items-baseline text-5xl font-semibold tracking-wide bg-gradient-to-r from-yellow-400 via-gray-200 to-yellow-200 bg-clip-text">
           <span className="text-transparent">SHΞNano Banana&nbsp;</span>
           <span
             role="img"
             aria-label="banana"
-            style={{textShadow: 'none', color: 'initial', WebkitTextFillColor: 'initial'}}>
+            style={{
+              WebkitBackgroundClip: 'initial',
+              backgroundClip: 'initial',
+              textShadow: 'none',
+            }}>
             🍌
           </span>
           <span className="text-transparent">&nbsp;™</span>
         </h1>
-        <button
-          onClick={() => {
-            setApiKeyError(undefined); // Clear previous errors when manually opening
-            setIsApiKeyModalOpen(true);
-          }}
-          className="absolute top-1/2 right-8 -translate-y-1/2 p-2 rounded-full text-gray-400 hover:bg-gray-800 hover:text-yellow-400 transition-colors"
-          title="Change API Key"
-          aria-label="Change API Key">
-          <KeyIcon className="w-6 h-6" />
-        </button>
+
+        <div className="flex justify-end">
+          <button
+            onClick={() => {
+              setApiKeyError(undefined); // Clear previous errors when manually opening
+              setIsApiKeyModalOpen(true);
+            }}
+            className="p-2 rounded-full text-gray-400 hover:bg-gray-800 hover:text-yellow-400 transition-colors"
+            title="Change API Key"
+            aria-label="Change API Key">
+            <KeyIcon className="w-6 h-6" />
+          </button>
+        </div>
       </header>
 
       <main className="w-full max-w-4xl mx-auto flex-grow flex flex-col items-center justify-center p-4">
@@ -333,7 +343,7 @@ const App: React.FC = () => {
               {isLoading ? (
                 <LoaderIcon className="w-7 h-7 animate-spin" />
               ) : (
-                <SparklesIcon className="w-7 h-7" />
+                <BananaIcon className="w-7 h-7" />
               )}
               {isLoading ? 'Generating...' : 'Generate Image'}
             </button>

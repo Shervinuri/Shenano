@@ -6,6 +6,7 @@ import React from 'react';
 import {
   ArrowDown,
   ArrowRight,
+  Banana,
   Baseline,
   ChevronDown,
   Copy,
@@ -45,6 +46,10 @@ export const ArrowPathIcon: React.FC<React.SVGProps<SVGSVGElement>> = (
 
 export const SparklesIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <Sparkles {...defaultProps} {...props} />
+);
+
+export const BananaIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <Banana {...defaultProps} {...props} />
 );
 
 export const PlusIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
