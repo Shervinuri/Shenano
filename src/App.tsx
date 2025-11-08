@@ -6,6 +6,7 @@ import React, {useCallback, useState, useEffect} from 'react';
 import ApiKeyModal from './components/ApiKeyModal';
 import ImageResult from './components/ImageResult';
 import LoadingIndicator from './components/LoadingIndicator';
+import QuotaErrorDialog from './components/QuotaErrorDialog';
 import ReferenceImageUploader from './components/ReferenceImageUploader';
 import {
   FileTextIcon,
@@ -55,6 +56,8 @@ const App: React.FC = () => {
   const [apiKey, setApiKey] = useState<string | null>(null);
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
   const [apiKeyError, setApiKeyError] = useState<string | undefined>(undefined);
+  const [isQuotaError, setIsQuotaError] = useState(false);
+
 
   // User Inputs
   const [userPrompt, setUserPrompt] = useState('');
@@ -101,6 +104,13 @@ const App: React.FC = () => {
     console.error(message, error);
     const errorDetails =
       error instanceof Error ? error.message : 'An unknown error occurred.';
+
+    // Check for quota error
+    if (errorDetails.includes('RESOURCE_EXHAUSTED') || errorDetails.includes('Quota exceeded')) {
+        setIsQuotaError(true);
+        setAppState(AppState.IDLE);
+        return; // Stop further error handling
+    }
 
     // Check for common API key errors
     if (errorDetails.includes('API key not valid') || errorDetails.includes('API_KEY_INVALID')) {
@@ -230,6 +240,7 @@ const App: React.FC = () => {
       {isApiKeyModalOpen && (
         <ApiKeyModal onSave={handleSaveApiKey} initialError={apiKeyError} />
       )}
+      {isQuotaError && <QuotaErrorDialog onClose={() => setIsQuotaError(false)} />}
       <header className="py-6 grid grid-cols-[1fr_auto_1fr] items-center px-8 z-10 shrink-0">
         {/* Left empty cell for spacing */}
         <div />

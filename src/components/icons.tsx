@@ -13,6 +13,7 @@ import {
   Download,
   // FIX: Add Film import
   Film,
+  Hourglass,
   Image,
   // FIX: Add KeyRound import
   KeyRound,
@@ -142,3 +143,7 @@ export const RectangleVerticalIcon: React.FC<React.SVGProps<SVGSVGElement>> = (
 export const RectangleHorizontalIcon: React.FC<
   React.SVGProps<SVGSVGElement>
 > = (props) => <RectangleHorizontal {...defaultProps} {...props} />;
+
+export const HourglassIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <Hourglass {...defaultProps} {...props} />
+);
