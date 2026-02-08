@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>☬SHΞN™ Express Accubank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Vazirmatn:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: #0a0a0a; /* Very Dark Black */
+            color: #e5e5e5;
+        }
+
+        .mono-font {
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #171717;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #b91c1c;
+            border-radius: 4px;
+        }
+
+        /* Copied State Animation */
+        .copied-style {
+            opacity: 0.4;
+            text-decoration: line-through;
+            color: #737373 !important; /* Neutral 500 */
+            transition: all 0.3s ease;
+        }
+
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(185, 28, 28, 0.1), 0 2px 4px -1px rgba(185, 28, 28, 0.06);
+            transition: transform 0.2s;
+        }
+        
+        .card-shadow:active {
+            transform: scale(0.98);
+        }
+
+        .tap-area {
+            cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center pb-10">
+
+    <!-- Header -->
+    <header class="w-full bg-neutral-900 border-b-4 border-red-700 p-6 sticky top-0 z-50 shadow-lg">
+        <h1 class="text-3xl md:text-4xl font-bold text-center text-red-600 tracking-wider" style="text-shadow: 0 0 10px rgba(220, 38, 38, 0.5);">
+            ☬SHΞN™ <span class="text-white text-lg block mt-1 opacity-80">Express Accubank</span>
+        </h1>
+        <p class="text-center text-neutral-500 text-xs mt-2">برای کپی کردن روی ایمیل یا پسورد کلیک کنید</p>
+    </header>
+
+    <!-- Stats -->
+    <div class="w-full max-w-md px-4 mt-4 flex justify-between text-neutral-400 text-sm">
+        <span id="total-count">Total: 0</span>
+        <button onclick="resetAll()" class="text-red-500 hover:text-red-400 underline">Reset Status</button>
+    </div>
+
+    <!-- Container -->
+    <main id="account-container" class="w-full max-w-md px-4 mt-4 space-y-3">
+        <!-- Accounts will be injected here via JS -->
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-red-700 text-white px-6 py-3 rounded-full shadow-2xl opacity-0 transition-opacity duration-300 z-50 font-bold tracking-wide pointer-events-none">
+        کپی شد!
+    </div>
+
+    <script>
+        // Data Source
+        const accounts = [
+            { u: "pamela@socialpop.com", p: "Mirandas534!" },
+            { u: "pietro.gendotti@gmail.com", p: "W3sG3m22$" },
+            { u: "amsdenje@gmail.com", p: "Angel841!" },
+            { u: "jne468@gmail.com", p: "Drpepper7!" },
+            { u: "oznakowanie@lukam.com.pl", p: "Sloneczko1!" },
+            { u: "oakleybunce@gmail.com", p: "Guzman32%" },
+            { u: "zayherrera77@gmail.com", p: "Isaiah5823!" },
+            { u: "trussler2303@gmail.com", p: "IamTrent23!" },
+            { u: "richvitkas@gmail.com", p: "ziuronys72" },
+            { u: "soulsmith93@gmail.com", p: "gorillaz9" },
+            { u: "zeynep1yavuz@yahoo.de", p: "Sinop57!" },
+            { u: "moumita.hanra@gmail.com", p: "Mhmhsh23!" },
+            { u: "eetu.e.vierinen@gmail.com", p: "K@tinkontti123" },
+            { u: "krfenemor@hotmail.com", p: "Daisies20" },
+            { u: "annika-ozi@outlook.com", p: "ameroula!26" },
+            { u: "badthiliono27@gmail.com", p: "Palecroot9!" },
+            { u: "muthu.kmr9100@gmail.com", p: "Darkness@13" },
+            { u: "raeganlee16@gmail.com", p: "Rlee2016!" },
+            { u: "anderalex13@gmail.com", p: "Alexander161!" },
+            { u: "deanit@aol.com", p: "Avalanche42!" },
+            { u: "vj1060@gmail.com", p: "ASutter24!" },
+            { u: "athina03@hotmail.com", p: "Ath0306!" },
+            { u: "rgibbs5169@yahoo.com", p: "Butterfly1!" },
+            { u: "baldlemon17@gmail.com", p: "108003774Ee!" },
+            { u: "wally.claassen@gmail.com", p: "Proactive1!!" },
+            { u: "jczeban@nyc.rr.com", p: "305_Lesli3" },
+            { u: "hinsonlau@gmail.com", p: "Hsl198384!" },
+            { u: "nkharybina@nanopools.info", p: "Express@A8285" },
+            { u: "alexvannoyd@gmail.com", p: "Ciocolata.88" },
+            { u: "tomhill1978@outlook.com", p: "Chester#01" },
+            { u: "neerajdana9@gmail.com", p: "Neeraj@1234" },
+            { u: "jamesabigale12@gmail.com", p: "Lollol123!" },
+            { u: "laluvaswani@gmail.com", p: "OmSaiRam108*" },
+            { u: "eternity202@outlook.com", p: "Silent202**" },
+            { u: "petersonjace80@gmail.com", p: "Starside22!" },
+            { u: "owenrichards662@gmail.com", p: "634ne3eE!" },
+            { u: "arthurhalbeck@yahoo.com", p: "Godzilla@12" },
+            { u: "dean1113@live.com", p: "vipers23!" },
+            { u: "blunt_sq_manhunt@hidmail.org", p: "822688524" },
+            { u: "mamanil512@tasiw.com", p: "EK3NF729UTTPDKX6TFKMM5D" },
+            { u: "jean.francois.beutin@gmail.com", p: "Leabeut10?" },
+            { u: "sdrehbein@gmail.com", p: "Lovedance123!" },
+            { u: "licakoy396@coswz.com", p: "EPRQ34HJVXLQ4DCMASRK3GX" },
+            { u: "dfj5780@hotmail.com", p: "harper2681" },
+            { u: "mphtkx@gmaiilku.id", p: "Premium@123" },
+            { u: "shivamgulve4@gmail.com", p: "Shivam@0498" },
+            { u: "artemiou1453@gmail.com", p: "Original21!" },
+            { u: "kacis64158@gamening.com", p: "819264873" },
+            { u: "thorbjth@gmail.com", p: "08Usybaf#" },
+            { u: "tscastello@gmail.com", p: "C4Corvette!" },
+            { u: "longhorns12m@gmail.com", p: "Codfish109$" },
+            { u: "cm076807@gmail.com", p: "Rocafirm3!" },
+            { u: "leeknsa@gmail.com", p: "asdeddZ12!" },
+            { u: "mahdipu99@gmail.com", p: "@eeevpn1" },
+            { u: "orlaquirke1@yahoo.co.uk", p: "rio045866068" },
+            { u: "akash.toor14@hotmail.com", p: "Prada14!" },
+            { u: "gorkov@sbb.rs", p: "Samsung1811!" },
+            { u: "almacarolina@hotmail.com", p: "Arre171184#" },
+            { u: "syo1212@outlook.com", p: "Am634454@" },
+            { u: "mbuechel@live.com.au", p: "Boom!e62" },
+            { u: "nortonsl@yahoo.com", p: "Missy2023!!" },
+            { u: "h.namlah@gmail.com", p: "Hamadali1982@@" },
+            { u: "juju1985@protonmail.com", p: "#d%#S76xn5$wvYj" },
+            { u: "alewis6274@hotmail.com", p: "Fishkill2011!" },
+            { u: "MARKVWELLONS@GMAIL.COM", p: "Murray@3512" },
+            { u: "snikivee@gmail.com", p: "Leonard007!" },
+            { u: "ramonavillarreal1@gmail.com", p: "Ramonavi11!" },
+            { u: "zorse12292@gmail.com", p: "GTF0n00b!" },
+            { u: "grosellroman@gmail.com", p: "Eliana23-05" },
+            { u: "theobaern@gmail.com", p: "Pokemon300!" },
+            { u: "eiganokuni@gmail.com", p: "murata8609" },
+            { u: "rkhatibi@gmail.com", p: "fckgwrhqqq" },
+            { u: "haynesstacy22@gmail.com", p: "Dhawonder@6" },
+            { u: "nasonsam@hotmail.com", p: "Tenixtoll1." },
+            { u: "Kumar.medishetty@gmail.com", p: "Goinside@1" },
+            { u: "bruno.lemoine29@wanadoo.fr", p: "Papou1901&" },
+            { u: "torfand@gmail.com", p: "45246449As!" },
+            { u: "andre23454@gmail.com", p: "Nan-aki11" },
+            { u: "supercancel97@gmail.com", p: "uHJr4B3v" },
+            { u: "aduarte@tecnicil.com", p: "Suporte1*1" },
+            { u: "davenewton@pes-global.com", p: "32Britain$" },
+            { u: "unmight_worldly@hidmail.org", p: "377669736" },
+            { u: "seif.odreeks@yahoo.com", p: "Ilovejesus2017+" },
+            { u: "paul.a.gaier@gmail.com", p: "2TaD7uux0s_18" },
+            { u: "allander.nathan@gmail.com", p: "Nick1983#" },
+            { u: "ogpogolobbies@gmail.com", p: "DaculaGeoriga9322$" },
+            { u: "serdarkaya322@gmail.com", p: "Smurfitkappa111!" },
+            { u: "josephogas@gmail.com", p: "Cowboys24!" },
+            { u: "rugyousum@digdig.org", p: "Methodforall321@" },
+            { u: "genuine_o0-logic@hidmail.org", p: "422842317" },
+            { u: "silvablnet@gmail.com", p: "Pepe2020@" },
+            { u: "emhemmed.madi@gmail.com", p: "vesper.20" },
+            { u: "nero912@gmail.com", p: "#Mockba2018" },
+            { u: "workeian123@gmail.com", p: "Scooter15456!" },
+            { u: "lawhan2578@gmail.com", p: "!zmfltm03" },
+            { u: "nunomhr@gmail.com", p: "Sexyandinoit1994." },
+            { u: "dopza86@gmail.com", p: "Qhdks@6974" },
+            { u: "jorge001022@gmail.com", p: "Jorge*pab22" },
+            { u: "bjones2893@gmail.com", p: "Dcshoes01!" },
+            { u: "canteenwallacole@gmail.com", p: "Raptors2004$" },
+            { u: "me.allwin@gmail.com", p: "Seople5757#" },
+            { u: "tashijeshong11@gmail.com", p: "Johnwall2!" },
+            { u: "oussama.bou00@gmail.com", p: "Azerty2525@@@" },
+            { u: "lucasccipriano@gmail.com", p: "Lucas_ca10@" },
+            { u: "defne.colak@gmail.com", p: "Defne648759!" },
+            { u: "hamchoi0103@gmail.com", p: "Minhhai2023@" },
+            { u: "Mattattack473@gmail.com", p: "Fatass001@" },
+            { u: "laimechemohamedelamine85@gmail.com", p: "Nyc2018*" }
+        ];
+
+        function renderAccounts() {
+            const container = document.getElementById('account-container');
+            container.innerHTML = '';
+            
+            document.getElementById('total-count').innerText = `Total: ${accounts.length}`;
+
+            accounts.forEach((acc, index) => {
+                const card = document.createElement('div');
+                card.className = "bg-neutral-800 rounded-lg p-3 border-l-4 border-neutral-700 hover:border-red-600 transition-colors card-shadow flex flex-col gap-2";
+                
+                // Email Row
+                const emailDiv = document.createElement('div');
+                emailDiv.className = "tap-area bg-neutral-900/50 p-2 rounded flex justify-between items-center group active:scale-[0.99] transition-transform";
+                emailDiv.onclick = function() { copyToClipboard(acc.u, this, 'Email'); };
+                emailDiv.innerHTML = `
+                    <span class="mono-font text-neutral-300 text-sm break-all font-medium truncate pr-2">${acc.u}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-neutral-600 group-hover:text-red-500 transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                `;
+
+                // Password Row
+                const passDiv = document.createElement('div');
+                passDiv.className = "tap-area bg-neutral-900/50 p-2 rounded flex justify-between items-center group active:scale-[0.99] transition-transform";
+                passDiv.onclick = function() { copyToClipboard(acc.p, this, 'Password'); };
+                passDiv.innerHTML = `
+                    <span class="mono-font text-red-400 text-sm break-all font-bold truncate pr-2">${acc.p}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-neutral-600 group-hover:text-red-500 transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11.536 16.236a1 1 0 01-.174.243l-4.242 4.242a1 1 0 01-1.414-1.414L7.464 17.553a1 1 0 01.243-.174l1.492-1.492a6 6 0 015.742-7.742z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" />
+                    </svg>
+                `;
+
+                // Index Badge
+                const badge = document.createElement('div');
+                badge.className = "text-[10px] text-neutral-600 font-mono text-right mt-1 select-none";
+                badge.innerText = `#${index + 1}`;
+
+                card.appendChild(emailDiv);
+                card.appendChild(passDiv);
+                card.appendChild(badge);
+                container.appendChild(card);
+            });
+        }
+
+        async function copyToClipboard(text, element, type) {
+            try {
+                // Try modern API
+                await navigator.clipboard.writeText(text);
+            } catch (err) {
+                // Fallback for older browsers or non-secure contexts
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand("copy");
+                document.body.removeChild(textArea);
+            }
+
+            // Visual Feedback (Turn Gray/Strike)
+            const textSpan = element.querySelector('span');
+            textSpan.classList.add('copied-style');
+            
+            // Icon Feedback
+            const icon = element.querySelector('svg');
+            icon.classList.remove('text-neutral-600', 'group-hover:text-red-500');
+            icon.classList.add('text-green-500'); // Momentary green flash logic could go here, but gray is better for "done" state
+
+            // Show Toast
+            showToast(`${type} کپی شد`);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            toast.style.opacity = '1';
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+            }, 1500);
+        }
+
+        function resetAll() {
+            renderAccounts();
+            showToast("وضعیت بازنشانی شد");
+        }
+
+        // Initialize
+        renderAccounts();
+
+    </script>
+</body>
+</html>
+
