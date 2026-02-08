@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHΞN™ Ultimate Scraper</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Vazirmatn:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Vazirmatn', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        shen: {
+                            bg: '#0f172a', // Slate 900
+                            card: '#1e293b', // Slate 800
+                            border: '#334155', // Slate 700
+                            accent: '#38bdf8', // Sky 400
+                            text: '#f8fafc', // Slate 50
+                            muted: '#94a3b8' // Slate 400
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; }
+        
+        /* Custom Checkbox Style */
+        .filter-checkbox:checked + div {
+            background-color: #38bdf8;
+            color: #0f172a;
+            border-color: #38bdf8;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #1e293b; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #475569; border-radius: 2px; }
+
+        /* Loader */
+        .scan-line {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #38bdf8, transparent);
+            position: absolute;
+            top: 0;
+            left: 0;
+            animation: scan 1.5s linear infinite;
+            display: none;
+        }
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .scanning .scan-line { display: block; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center py-8 px-4 font-sans">
+
+    <!-- App Container -->
+    <div class="w-full max-w-2xl flex flex-col gap-4">
+
+        <!-- Header & Title -->
+        <div class="text-center mb-2">
+            <h1 class="text-2xl font-black tracking-tight text-white mb-1 font-mono">
+                SHΞN™ <span class="text-shen-accent font-light">SCRAPER</span>
+            </h1>
+            <p class="text-[10px] text-shen-muted uppercase tracking-[0.2em]">Professional Extraction Tool v6.0</p>
+        </div>
+
+        <!-- 1. MODE SELECTION (TABS) -->
+        <div class="grid grid-cols-2 bg-shen-card p-1 rounded-xl border border-shen-border">
+            <button onclick="setMode('config')" id="tab-config" class="py-2.5 text-sm font-bold rounded-lg transition-all bg-shen-accent text-shen-bg shadow-lg">
+                <i class="fas fa-bolt mr-2"></i> Configs
+            </button>
+            <button onclick="setMode('account')" id="tab-account" class="py-2.5 text-sm font-bold rounded-lg transition-all text-shen-muted hover:text-white">
+                <i class="fas fa-user-shield mr-2"></i> Accounts
+            </button>
+        </div>
+
+        <!-- 2. MAIN CONTROL PANEL -->
+        <div class="bg-shen-card rounded-xl border border-shen-border p-5 relative overflow-hidden" id="mainPanel">
+            <div class="scan-line"></div>
+
+            <!-- Input Row -->
+            <div class="flex gap-3 mb-5">
+                <div class="relative flex-grow">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fab fa-telegram text-shen-muted"></i>
+                    </div>
+                    <input type="text" id="targetInput" dir="ltr"
+                        class="w-full bg-[#020617] border border-shen-border text-white text-sm rounded-lg focus:ring-1 focus:ring-shen-accent focus:border-shen-accent block w-full pl-10 p-2.5 placeholder-gray-600 font-mono" 
+                        placeholder="@channel or t.me/channel">
+                </div>
+                <select id="scanDepth" class="bg-[#020617] border border-shen-border text-white text-xs rounded-lg focus:ring-shen-accent focus:border-shen-accent p-2.5 w-24 text-center font-mono">
+                    <option value="1">1 Pg</option>
+                    <option value="5" selected>5 Pgs</option>
+                    <option value="20">20 Pgs</option>
+                    <option value="50">50 Pgs</option>
+                </select>
+            </div>
+
+            <!-- Filters (Only visible in Config Mode) -->
+            <div id="filterSection" class="mb-1">
+                <p class="text-[10px] text-shen-muted uppercase font-bold mb-2">Protocol Filters</p>
+                <div class="grid grid-cols-4 gap-2">
+                    <label class="cursor-pointer">
+                        <input type="checkbox" class="filter-checkbox hidden" value="vless" checked>
+                        <div class="text-[10px] border border-shen-border rounded py-1.5 text-center transition hover:border-shen-accent text-shen-muted font-mono select-none">VLESS</div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="checkbox" class="filter-checkbox hidden" value="vmess" checked>
+                        <div class="text-[10px] border border-shen-border rounded py-1.5 text-center transition hover:border-shen-accent text-shen-muted font-mono select-none">VMESS</div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="checkbox" class="filter-checkbox hidden" value="trojan" checked>
+                        <div class="text-[10px] border border-shen-border rounded py-1.5 text-center transition hover:border-shen-accent text-shen-muted font-mono select-none">TROJAN</div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="checkbox" class="filter-checkbox hidden" value="ss" checked>
+                        <div class="text-[10px] border border-shen-border rounded py-1.5 text-center transition hover:border-shen-accent text-shen-muted font-mono select-none">SS/SSR</div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="checkbox" class="filter-checkbox hidden" value="hysteria">
+                        <div class="text-[10px] border border-shen-border rounded py-1.5 text-center transition hover:border-shen-accent text-shen-muted font-mono select-none">HYSTERIA</div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="checkbox" class="filter-checkbox hidden" value="tuic">
+                        <div class="text-[10px] border border-shen-border rounded py-1.5 text-center transition hover:border-shen-accent text-shen-muted font-mono select-none">TUIC</div>
+                    </label>
+                    <label class="cursor-pointer col-span-2">
+                        <input type="checkbox" class="filter-checkbox hidden" value="tgproxy" checked>
+                        <div class="text-[10px] border border-shen-border rounded py-1.5 text-center transition hover:border-shen-accent text-shen-muted font-mono select-none">TG PROXY (tg://)</div>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Combo Info (Only visible in Account Mode) -->
+            <div id="accountInfo" class="hidden mb-1">
+                 <div class="p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg text-xs text-blue-200">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    Looking for <b>Email:Password</b> or <b>User:Pass</b> patterns.
+                 </div>
+            </div>
+
+        </div>
+
+        <!-- 3. MONITOR LOG -->
+        <div class="bg-black rounded-lg border border-shen-border p-3 font-mono text-[10px] h-32 overflow-y-auto custom-scroll shadow-inner" id="consoleLog">
+            <div class="text-green-500">root@shen:~# system_ready</div>
+        </div>
+
+        <!-- 4. RESULTS DISPLAY (Hidden by default) -->
+        <div id="resultArea" class="hidden w-full bg-shen-card rounded-xl border border-shen-border overflow-hidden flex flex-col">
+            <div class="bg-[#0f172a] px-3 py-2 border-b border-shen-border flex justify-between items-center">
+                <span class="text-xs font-mono text-shen-accent">FOUND: <span id="countFound" class="text-white font-bold">0</span></span>
+                <button onclick="clearResults()" class="text-[10px] text-red-400 hover:text-red-300">CLEAR</button>
+            </div>
+            <textarea id="outputField" class="w-full bg-[#0f172a] text-xs text-shen-muted font-mono p-3 h-48 focus:outline-none resize-none custom-scroll" readonly dir="ltr"></textarea>
+        </div>
+
+        <!-- 5. ACTION BUTTONS (Bottom Fixed) -->
+        <div class="grid grid-cols-4 gap-3 w-full mt-2">
+            <button onclick="startProcess()" id="btnStart" class="col-span-2 bg-white text-black hover:bg-gray-200 font-bold py-3 rounded-lg text-sm transition shadow-lg active:scale-95">
+                START
+            </button>
+            <button onclick="copyResults()" class="bg-shen-card border border-shen-border hover:bg-shen-border text-white font-medium py-3 rounded-lg text-xs transition">
+                COPY
+            </button>
+            <button onclick="downloadResults()" class="bg-shen-card border border-shen-border hover:bg-shen-border text-white font-medium py-3 rounded-lg text-xs transition">
+                SAVE
+            </button>
+        </div>
+
+    </div>
+
+    <footer class="mt-8 text-[9px] text-shen-muted font-mono opacity-50">
+        SHΞN™ Exclusive | CLIENT-SIDE PROCESSING
+    </footer>
+
+    <script>
+        // --- CONFIGURATION ---
+        const PROXY_LIST = [
+            "https://corsproxy.io/?",
+            "https://api.allorigins.win/raw?url="
+        ];
+        
+        // --- STATE ---
+        let state = {
+            mode: 'config', // 'config' or 'account'
+            isScanning: false,
+            results: new Set()
+        };
+
+        // --- UI FUNCTIONS ---
+        function setMode(mode) {
+            if(state.isScanning) return;
+            state.mode = mode;
+            
+            // Tab Styles
+            const activeClass = "bg-shen-accent text-shen-bg shadow-lg";
+            const inactiveClass = "text-shen-muted hover:text-white bg-transparent shadow-none";
+            
+            if(mode === 'config') {
+                document.getElementById('tab-config').className = `py-2.5 text-sm font-bold rounded-lg transition-all ${activeClass}`;
+                document.getElementById('tab-account').className = `py-2.5 text-sm font-bold rounded-lg transition-all ${inactiveClass}`;
+                document.getElementById('filterSection').classList.remove('hidden');
+                document.getElementById('accountInfo').classList.add('hidden');
+            } else {
+                document.getElementById('tab-account').className = `py-2.5 text-sm font-bold rounded-lg transition-all ${activeClass}`;
+                document.getElementById('tab-config').className = `py-2.5 text-sm font-bold rounded-lg transition-all ${inactiveClass}`;
+                document.getElementById('filterSection').classList.add('hidden');
+                document.getElementById('accountInfo').classList.remove('hidden');
+            }
+            log(`Switched to ${mode.toUpperCase()} mode.`);
+        }
+
+        function log(msg, type="info") {
+            const el = document.getElementById('consoleLog');
+            const time = new Date().toLocaleTimeString('en-US', {hour12: false});
+            let color = "text-shen-muted";
+            if(type === 'success') color = "text-green-400";
+            if(type === 'error') color = "text-red-400";
+            if(type === 'warn') color = "text-yellow-400";
+            
+            el.innerHTML += `<div class="${color}"><span class="opacity-50">[${time}]</span> ${msg}</div>`;
+            el.scrollTop = el.scrollHeight;
+        }
+
+        // --- CORE LOGIC ---
+        async function startProcess() {
+            if(state.isScanning) return;
+
+            // 1. Validate Input
+            let input = document.getElementById('targetInput').value.trim();
+            if(!input) { log("Error: No channel target.", "error"); return; }
+            
+            // Parse Channel
+            let channel = input.replace('https://t.me/', '').replace('t.me/', '').replace('@', '').split('/')[0].split('?')[0];
+            if(input.includes('/s/')) channel = input.split('/s/')[1].split('/')[0];
+
+            const depth = parseInt(document.getElementById('scanDepth').value);
+
+            // 2. Prepare State
+            state.isScanning = true;
+            state.results.clear();
+            document.getElementById('resultArea').classList.add('hidden');
+            document.getElementById('outputField').value = "";
+            document.getElementById('btnStart').innerText = "STOP";
+            document.getElementById('btnStart').classList.add('bg-red-500', 'text-white', 'hover:bg-red-600');
+            document.getElementById('btnStart').classList.remove('bg-white', 'text-black', 'hover:bg-gray-200');
+            document.getElementById('btnStart').onclick = stopProcess; // Change action to stop
+            document.getElementById('mainPanel').classList.add('scanning');
+
+            log(`Starting scan: @${channel} (${depth} pages)`, "warn");
+
+            // 3. Get Active Filters (Only for Config Mode)
+            let filters = [];
+            if(state.mode === 'config') {
+                document.querySelectorAll('.filter-checkbox:checked').forEach(cb => filters.push(cb.value));
+                log(`Active Filters: ${filters.join(', ')}`);
+            }
+
+            // 4. Loop
+            let nextUrl = `https://t.me/s/${channel}`;
+            
+            for(let i=0; i<depth; i++) {
+                if(!state.isScanning) break; // Stop flag
+                
+                log(`Fetching page ${i+1}/${depth}...`);
+                
+                try {
+                    const html = await fetchPage(nextUrl);
+                    if(!html) throw new Error("Fetch failed");
+
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const messages = doc.querySelectorAll('.tgme_widget_message');
+
+                    if(messages.length === 0) {
+                        log("No messages found on page.", "error");
+                        break;
+                    }
+
+                    // Extract
+                    extractData(doc, filters);
+
+                    // Pagination
+                    let minId = Infinity;
+                    messages.forEach(m => {
+                        const dp = m.getAttribute('data-post');
+                        if(dp) {
+                            const id = parseInt(dp.split('/')[1]);
+                            if(id < minId) minId = id;
+                        }
+                    });
+
+                    if(minId !== Infinity && minId > 1) {
+                        nextUrl = `https://t.me/s/${channel}?before=${minId}`;
+                    } else {
+                        log("End of channel history.");
+                        break;
+                    }
+
+                    // Rate Limit Delay
+                    await new Promise(r => setTimeout(r, 1200));
+
+                } catch(e) {
+                    log(`Err: ${e.message}`, "error");
+                    break;
+                }
+            }
+
+            finishProcess();
+        }
+
+        function stopProcess() {
+            log("Process stopped by user.", "error");
+            state.isScanning = false;
+        }
+
+        function finishProcess() {
+            state.isScanning = false;
+            document.getElementById('mainPanel').classList.remove('scanning');
+            
+            // Reset Button
+            const btn = document.getElementById('btnStart');
+            btn.innerText = "START";
+            btn.className = "col-span-2 bg-white text-black hover:bg-gray-200 font-bold py-3 rounded-lg text-sm transition shadow-lg active:scale-95";
+            btn.onclick = startProcess;
+
+            // Show Results
+            if(state.results.size > 0) {
+                document.getElementById('resultArea').classList.remove('hidden');
+                document.getElementById('outputField').value = Array.from(state.results).join('\n\n');
+                document.getElementById('countFound').innerText = state.results.size;
+                log(`Done. Found ${state.results.size} items.`, "success");
+            } else {
+                log("Scan finished. Nothing found.", "warn");
+            }
+        }
+
+        async function fetchPage(url) {
+            // Try proxies sequentially
+            for(const proxy of PROXY_LIST) {
+                try {
+                    const res = await fetch(proxy + encodeURIComponent(url));
+                    if(res.ok) return await res.text();
+                } catch(e) { continue; }
+            }
+            return null;
+        }
+
+        function extractData(doc, filters) {
+            const texts = doc.querySelectorAll('.tgme_widget_message_text');
+            let foundCount = 0;
+
+            // Regex Patterns
+            // Note: tg://proxy?... parameters vary, so we catch the whole link until whitespace/quote
+            const patterns = {
+                vless: /vless:\/\/[a-zA-Z0-9\-_@.:?=&%#\[\]]+/g,
+                vmess: /vmess:\/\/[a-zA-Z0-9\-_@.:?=&%#\[\]]+/g,
+                trojan: /trojan:\/\/[a-zA-Z0-9\-_@.:?=&%#\[\]]+/g,
+                ss: /ss:\/\/[a-zA-Z0-9\-_@.:?=&%#\[\]]+/g,
+                hysteria: /hysteria2?:\/\/[a-zA-Z0-9\-_@.:?=&%#\[\]]+/g,
+                tuic: /tuic:\/\/[a-zA-Z0-9\-_@.:?=&%#\[\]]+/g,
+                tgproxy: /tg:\/\/proxy\?server=[^&\s"']+(?:&amp;|&)[^&\s"']+(?:&amp;|&)[^&\s"']+/g
+            };
+
+            const accountRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}:[^\s<>"']+/g;
+
+            texts.forEach(el => {
+                let text = el.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/&amp;/g, '&').replace(/<[^>]*>/g, '');
+                
+                if(state.mode === 'config') {
+                    // Check against active filters
+                    filters.forEach(key => {
+                        const regex = patterns[key];
+                        if(!regex) return;
+                        
+                        const matches = text.match(regex);
+                        if(matches) {
+                            matches.forEach(m => {
+                                let clean = m.trim();
+                                if(!state.results.has(clean)) {
+                                    state.results.add(clean);
+                                    foundCount++;
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    // Account Mode
+                    const matches = text.match(accountRegex);
+                    if(matches) {
+                        matches.forEach(m => {
+                            if(!state.results.has(m) && m.length > 8) {
+                                state.results.add(m);
+                                foundCount++;
+                            }
+                        });
+                    }
+                }
+            });
+
+            if(foundCount > 0) log(`+ ${foundCount} items found.`);
+        }
+
+        // --- EXPORT FUNCTIONS ---
+        function copyResults() {
+            const txt = document.getElementById('outputField').value;
+            if(!txt) return;
+            navigator.clipboard.writeText(txt);
+            log("Copied to clipboard.", "success");
+        }
+
+        function downloadResults() {
+            const txt = document.getElementById('outputField').value;
+            if(!txt) return;
+            const blob = new Blob([txt], {type: 'text/plain'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `SHEN_${state.mode}_${Date.now()}.txt`;
+            a.click();
+            log("File saved.", "success");
+        }
+        
+        function clearResults() {
+            state.results.clear();
+            document.getElementById('outputField').value = "";
+            document.getElementById('countFound').innerText = "0";
+            document.getElementById('resultArea').classList.add('hidden');
+        }
+
+        // Initialization Log
+        log("System initialized. Select mode to begin.");
+    </script>
+</body>
+</html>
+
